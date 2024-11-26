@@ -8,6 +8,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
     {
+        services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+
         services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         services.AddScoped<IValidatorProvider, ValidatorProvider>();
 
