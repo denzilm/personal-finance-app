@@ -16,6 +16,33 @@ namespace PersonalFinanceApp.Shared.Hosting;
 
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection ConfigureControllers(this IServiceCollection services)
+    {
+        services.AddControllers(options =>
+        {
+            options.ReturnHttpNotAcceptable = true;
+
+            // Response types that should be applied to all action methods across all controllers
+            options.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
+            options.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+
+            options.Filters.Add(new ConsumesAttribute(MediaTypeNames.Application.Json));
+            options.Filters.Add(new ProducesAttribute(MediaTypeNames.Application.Json));
+        })
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+
+        services.AddProblemDetails();
+
+        services.AddExceptionHandler<UnauthorizedExceptionHandler>();
+        services.AddExceptionHandler<ValidationExceptionHandler>();
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+
+        return services;
+    }
     public static IServiceCollection ConfigureOpenApi(this IServiceCollection services, OpenApiInfo apiInfo)
     {
         services.AddEndpointsApiExplorer();
