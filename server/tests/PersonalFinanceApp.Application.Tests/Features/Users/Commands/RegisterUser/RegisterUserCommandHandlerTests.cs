@@ -16,8 +16,7 @@ public sealed class RegisterUserCommandHandlerTests
     [Fact]
     public async Task RegisterUserCommandHandler_ShouldRegisterUser()
     {
-        var sut = new RegisterUserCommandHandler(
-            _logger.Object, _validatorProvider.Object, _authenticationService.Object);
+        var sut = new RegisterUserCommandHandler(_logger.Object, _authenticationService.Object);
 
         _validatorProvider.Setup(x => x.ValidateAsync(It.IsAny<RegisterUserCommand>(), CancellationToken.None))
             .Returns(new List<ValidationResult> { new() { Errors = [] } }.ToAsyncEnumerable());
