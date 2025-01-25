@@ -353,3 +353,6 @@ MigrationBackup/
 **/*.eslintcache
 
 **/coverage.*.xml
+
+
+**/*.env
