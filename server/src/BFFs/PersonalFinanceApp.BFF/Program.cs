@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using PersonalFinanceApp.BFF.Services;
 using PersonalFinanceApp.BFF.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,12 +19,16 @@ builder.Services
                 .WithHeaders("Content-Type")
                 .AllowCredentials();
         });
-    });
+    })
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options => options.Cookie.SameSite = SameSiteMode.None);
 
 builder.Services.AddHttpClient<IIdentityClient, IdentityClient>(client =>
 {
     client.BaseAddress = new Uri(identityUrl);
 });
+
+builder.Services.AddScoped<ISignInManager, SignInManager>();
 
 var app = builder.Build();
 

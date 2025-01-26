@@ -15,19 +15,44 @@ public sealed class AuthenticationService : IAuthenticationService
     private readonly ILogger<AuthenticationService> _logger;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ITokensGenerator _tokensGenerator;
-    private readonly IJwtSettingsRetriever _jwtSettingsRetriever;
 
     public AuthenticationService(
         ILogger<AuthenticationService> logger,
         UserManager<ApplicationUser> userManager,
-        ITokensGenerator tokensGenerator,
-        IJwtSettingsRetriever jwtSettingsRetriever)
+        ITokensGenerator tokensGenerator)
     {
         _logger = logger;
         _userManager = userManager;
         _tokensGenerator = tokensGenerator;
-        _jwtSettingsRetriever = jwtSettingsRetriever;
     }
+
+    public async Task<LoginResponse> LoginAsync(LoginRequest request)
+    {
+        var (email, password) = request;
+        _logger.LogInformation("User with email '{Email}' attempting to login", email);
+
+        var applicationUser = await _userManager.FindByEmailAsync(email);
+        if (applicationUser is not null)
+        {
+            var isPasswordCorrect = await _userManager.CheckPasswordAsync(applicationUser, password);
+            if (isPasswordCorrect)
+            {
+                var (accessToken, refreshToken) = _tokensGenerator.GenerateTokens(applicationUser);
+
+                applicationUser.UpdateRefreshToken(refreshToken);
+                await _userManager.UpdateAsync(applicationUser);
+
+                return new LoginResponse(accessToken, refreshToken);
+            }
+
+            _logger.LogWarning("User with email '{Email}' attempted to login with wrong credentials", email);
+        }
+
+        _logger.LogInformation("Login failed for user with email '{Email}'", email);
+
+        throw new UnauthorizedException();
+    }
+
     public async Task RegisterAsync(RegisterRequest request)
     {
         var (firstName, lastName, email, password) = request;

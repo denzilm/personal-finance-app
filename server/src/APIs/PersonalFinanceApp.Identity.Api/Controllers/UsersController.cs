@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PersonalFinanceApp.Application.Features.Users.Commands.LoginUser;
 using PersonalFinanceApp.Application.Features.Users.Commands.RegisterUser;
+using PersonalFinanceApp.Application.Models.Authentication;
 using PersonalFinanceApp.Shared.Hosting.Mvc;
 
 using static PersonalFinanceApp.Application.Utility.Constants;
@@ -25,7 +27,7 @@ public sealed class UsersController : BaseController
     /// <remarks>
     /// Sample request:
     ///
-    ///     POST /api/v{api-version}/users
+    ///     POST /api/v{api-version}/users/register
     ///     {
     ///         "firstName": "John",
     ///         "lastName": "Doe",
@@ -43,5 +45,29 @@ public sealed class UsersController : BaseController
     {
         await _sender.Send(request);
         return NoContent();
+    }
+
+    /// <summary>
+    ///  Login User
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     POST /api/v{api-version}/users/login
+    ///     {
+    ///         "email": "john.doe@example.com",
+    ///         "password": "P@ssw0rd"
+    ///     }
+    /// </remarks>
+    /// <param name="request">Login credentials</param>
+    [HttpPost("login", Name = RouteNames.LoginUser)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [AllowAnonymous]
+    public async Task<ActionResult<LoginResponse>> LoginUser(LoginUserCommand request)
+    {
+        var response = await _sender.Send(request);
+        return Ok(response);
     }
 }

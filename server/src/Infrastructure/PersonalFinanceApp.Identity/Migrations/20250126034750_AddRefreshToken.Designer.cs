@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonalFinanceApp.Identity;
 
@@ -11,9 +12,11 @@ using PersonalFinanceApp.Identity;
 namespace PersonalFinanceApp.Identity.Migrations
 {
     [DbContext(typeof(PersonalFinanceAppIdentityContext))]
-    partial class PersonalFinanceAppIdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20250126034750_AddRefreshToken")]
+    partial class AddRefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

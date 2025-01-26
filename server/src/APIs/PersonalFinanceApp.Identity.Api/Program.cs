@@ -37,7 +37,7 @@ try
         })
         .ConfigureVersioning(defaultApiVersion: new ApiVersion(1, 0))
         .ConfigureApplicationServices()
-        .ConfigureIdentity(databaseConnectionString);
+        .ConfigureIdentity(databaseConnectionString, builder.Configuration);
 
     var app = builder.Build();
 
