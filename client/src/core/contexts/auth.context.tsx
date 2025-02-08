@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAxios } from './axios.context';
 
 import { handleError } from '../utils/handle-error';
+import { useQueryClient } from '@tanstack/react-query';
 
 export type SignUpRequest = {
   firstName: string;
@@ -13,6 +14,8 @@ export type SignUpRequest = {
   confirmPassword: string;
 };
 
+export type SignInRequest = Pick<SignUpRequest, 'email' | 'password'>;
+
 type User = {
   id: string;
 } & Pick<SignUpRequest, 'email' | 'firstName' | 'lastName'>;
@@ -20,12 +23,14 @@ type User = {
 type AuthContextType = {
   user?: User;
   registerUser: (request: SignUpRequest) => Promise<void>;
+  signInUser: (request: SignInRequest) => Promise<void>;
 };
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const axios = useAxios();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const registerUser = async (request: SignUpRequest) => {
@@ -37,7 +42,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const value = { registerUser };
+  const signInUser = async (request: SignInRequest) => {
+    try {
+      await axios.post<SignInRequest>('/users/login', request);
+      queryClient.invalidateQueries();
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const value = { registerUser, signInUser };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

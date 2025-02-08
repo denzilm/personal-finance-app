@@ -1,12 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import {
-  SignUpContainer,
-  LogoContainer,
-  SignUpContentContainer,
-  SignUpLinkContainer,
-  SignupFormContainer
-} from './sign-up.styles';
+import { LogoContainer, SignUpContentContainer, SignUpLinkContainer, SignupFormContainer } from './sign-up.styles';
 
 import { SignUpRequest, useAuth } from '../../core/contexts/auth.context';
 
@@ -25,7 +19,7 @@ import { LandingPageGraphic } from '../../core/components/auth/landing-page-grap
 export function SignUp() {
   const { registerUser } = useAuth();
   return (
-    <SignUpContainer>
+    <>
       <LogoContainer>
         <Logo />
       </LogoContainer>
@@ -63,6 +57,6 @@ export function SignUp() {
           </FormContainer>
         </SignupFormContainer>
       </SignUpContentContainer>
-    </SignUpContainer>
+    </>
   );
 }

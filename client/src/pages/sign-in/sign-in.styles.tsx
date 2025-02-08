@@ -1,7 +1,15 @@
 import styled from 'styled-components';
 import { respond } from '../../mixins.styles';
 
-export const SignUpContentContainer = styled.div`
+export const LogoContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  border-radius: 0 0 7px 7px;
+  background-color: var(--color-grey-400);
+
+  ${respond.desktop` display: none;`}
+`;
+export const SignInContentContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,24 +23,14 @@ export const SignUpContentContainer = styled.div`
       max-width: initial;
     `}
 `;
-
-export const LogoContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  border-radius: 0 0 7px 7px;
-  background-color: var(--color-grey-400);
-
-  ${respond.desktop` display: none;`}
-`;
-
-export const SignupFormContainer = styled.div`
+export const SignInFormContainer = styled.div`
   width: 50rem;
   ${respond.desktop`
     flex-basis: 50rem;
   `}
 `;
 
-export const SignUpLinkContainer = styled.p`
+export const SignInLinkContainer = styled.p`
   margin-top: 2rem;
   font-size: 0.875rem;
   font-weight: 500;
